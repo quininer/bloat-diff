@@ -1,0 +1,13 @@
+[package]
+name = "bloat-diff"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1"
+argh = "0.1"
+object = "0.37"
+addr2line = "0.25"
+# capstone = "0.13"
+memmap2 = "0.9"
+indexmap = "2"
