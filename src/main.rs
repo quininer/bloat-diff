@@ -186,11 +186,18 @@ fn collect_changed(
         {
             sum += len;
 
-            if let Some(frame) = addr2line.find_frames(offset)
+            let mut iter = addr2line.find_frames(offset)
                 .map_err(|err| anyhow::format_err!("addr2line: {:?}", err))?
                 .filter(|frame| Ok(frame.function.is_some() && frame.location.is_some()))
-                .last()?
-            {
+                .peekable();
+            let mut last = None;
+            while let Some(next) = iter.next()? {
+                if iter.peek()?.is_some() || last.is_none() {
+                    last = Some(next);
+                }
+            }
+
+            if let Some(frame) = last {
                 let location = frame.location.unwrap();
                 let file = location.file.unwrap();
                 let fileid = files.insert_full(file.into()).0;
